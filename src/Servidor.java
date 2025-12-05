@@ -38,7 +38,7 @@ public class Servidor {
                     dirRegistros.get(registro.getDominio()).add(registro);
                 }
             } catch (IOException e) {
-                throw new RuntimeException();
+                salida.println("500 Server error");
             }
 
 
@@ -50,7 +50,8 @@ public class Servidor {
                 // si el mensaje es EXIT o exit termina el servidor
                 if (mensaje.equalsIgnoreCase("EXIT")) {
                     salida.println("Conexion terminada");
-                } else {
+                }
+                else {
                     if (mensaje.equals("LIST")) {
                         salida.println("150 Inicio listado");
                         for (Map.Entry<String, ArrayList<Registro>> datos : dirRegistros.entrySet()) {
@@ -63,9 +64,9 @@ public class Servidor {
                             }
 
                         }
-                        salida.println("226 Fin listado");
-
-                    } else {
+                        salida.println("226 Fin listado\n");
+                    }
+                    else {
                         // Los dividimos por partes para que se pueda obtener la respuesta del servidor
                         String[] formato = mensaje.split(" ");
 
@@ -77,19 +78,21 @@ public class Servidor {
                             ArrayList<Registro> registros = dirRegistros.get(formato[2]);
                             if (registros != null) {
                                 for (int i = 0; i < registros.size(); i++) {
-                                    if (formato[1].equals(registros.get(i).getTipo())) {
+                                    // Si la segunda y tercera parte de formato es igual al arraylist en la posicion
+                                    // actual dentro lo evaluamos por su tipo y dominio respectivamente.
+                                    if (formato[1].equals(registros.get(i).getTipo()) &&
+                                            formato[2].equals(registros.get(i).getDominio())) {
                                         salida.println("200 " + registros.get(i).getValor());
-                                    } else {
-                                        salida.println("404 Not Found");
                                     }
                                 }
+                                salida.println();
                             } else {
-                                salida.println("404 Not Found");
+                                salida.println("404 Not Found\n");
                             }
 
                         }
                         else {
-                            salida.println("400 Bad request");
+                            salida.println("400 Bad request\n");
                         }
                     }
                 }
@@ -99,9 +102,7 @@ public class Servidor {
 
             // Cierre
             cliente.close();
-        } catch (Exception e) {
-            System.out.println("500 Server error");
-        }
+        } catch (Exception e) {}
     }
 }
 
