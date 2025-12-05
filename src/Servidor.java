@@ -48,34 +48,50 @@ public class Servidor {
                 mensaje = entrada.readLine();
 
                 // si el mensaje es EXIT o exit termina el servidor
-                if (!mensaje.equalsIgnoreCase("EXIT")) {
-                    // Los dividimos por partes para que se pueda obtener la respuesta del servidor
-                    String[] formato = mensaje.split(" ");
-
-                    // si formato no tiene una longitud de 3, por los 3 valores divididos de "mensaje"
-                    // y el primer valor no es LOOKUP, nos da el siguiente mensaje.
-                    if (formato.length == 3 && formato[0].equals("LOOKUP")) {
-
-                        // creamos un arraylist de registro que guarde el valor o los valores de la clave
-                        ArrayList<Registro> registros = dirRegistros.get(formato[2]);
-                        if (registros != null) {
-                            for (int i = 0; i < registros.size(); i++) {
-                                if (formato[1].equals(registros.get(i).getTipo())) {
-                                    salida.println("200 " + registros.get(i).getValor());
-                                } else {
-                                    salida.println("404 Not Found");
-                                }
-                            }
-                        } else {
-                            salida.println("404 Not Found");
-                        }
-
-                    }
-                    else {
-                        salida.println("400 Bad request");
-                    }
-                } else {
+                if (mensaje.equalsIgnoreCase("EXIT")) {
                     salida.println("Conexion terminada");
+                } else {
+                    if (mensaje.equals("LIST")) {
+                        salida.println("150 Inicio listado");
+                        for (Map.Entry<String, ArrayList<Registro>> datos : dirRegistros.entrySet()) {
+                            ArrayList<Registro> valoresClave = datos.getValue();
+
+                            for (int i = 0; i < valoresClave.size(); i++) {
+                                salida.println(valoresClave.get(i).getDominio()+ " " +
+                                               valoresClave.get(i).getTipo() + " " +
+                                               valoresClave.get(i).getValor());
+                            }
+
+                        }
+                        salida.println("226 Fin listado");
+
+                    } else {
+                        // Los dividimos por partes para que se pueda obtener la respuesta del servidor
+                        String[] formato = mensaje.split(" ");
+
+                        // si formato no tiene una longitud de 3, por los 3 valores divididos de "mensaje"
+                        // y el primer valor no es LOOKUP, nos da el siguiente mensaje.
+                        if (formato.length == 3 && formato[0].equals("LOOKUP")) {
+
+                            // creamos un arraylist de registro que guarde el valor o los valores de la clave
+                            ArrayList<Registro> registros = dirRegistros.get(formato[2]);
+                            if (registros != null) {
+                                for (int i = 0; i < registros.size(); i++) {
+                                    if (formato[1].equals(registros.get(i).getTipo())) {
+                                        salida.println("200 " + registros.get(i).getValor());
+                                    } else {
+                                        salida.println("404 Not Found");
+                                    }
+                                }
+                            } else {
+                                salida.println("404 Not Found");
+                            }
+
+                        }
+                        else {
+                            salida.println("400 Bad request");
+                        }
+                    }
                 }
                 System.out.println("Cliente dice: " + mensaje);
 
