@@ -6,3 +6,10 @@ wikipedia.org A 185.15.58.226
 wikipedia.org MX mx1.mail.com
 wikipedia.org MX mx2.mail.com
 www.papa.com CNAME ejm.papa.com
+curso.local A 192.14.32.55
+curso.local MX 45.78.1.02
+hola.es CNAME polar.org
+wikipedia.org MX mx3.mail.com
+hola.es CNAME ppe.es.op
+hola.es CNAME ppe.es
+ooso.es CNAME pablo.es
